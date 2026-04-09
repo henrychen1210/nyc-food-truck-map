@@ -9,7 +9,7 @@ import '../App.css';
 let lineData = require('../json/Subway_Lines.json');
 let stops = require('../json/Subway_Stations.json');
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaWFtaGVucnljaGVuIiwiYSI6ImNsaXAydmZ3NzBrcnIzY256c3h6Y295ZHQifQ.a3KtDSOe2Qplv086h6Nm3Q';
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 function Home({ isAuth }) {
   const [postLists, setPostList] = useState([]);

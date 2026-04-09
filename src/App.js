@@ -10,7 +10,7 @@ import Login from "./pages/Login";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase-config";
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaWFtaGVucnljaGVuIiwiYSI6ImNsaXAydmZ3NzBrcnIzY256c3h6Y295ZHQifQ.a3KtDSOe2Qplv086h6Nm3Q';
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 export default function App() {
   
