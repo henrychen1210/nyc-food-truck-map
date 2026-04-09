@@ -1,6 +1,6 @@
 import { getDocs, collection, deleteDoc, doc, query, where } from "firebase/firestore";
 import { auth, db } from "../firebase-config";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
 
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
@@ -23,6 +23,7 @@ function Home({ isAuth }) {
   const [stopdetailContent, setstopdetailContent] = useState(null);
   const [isHidden, setIsHidden] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   //http://web.mta.info/developers/resources/line_colors.html
   const colorMap = {
@@ -243,17 +244,22 @@ function Home({ isAuth }) {
     getPosts("");
   });
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  useEffect(() => {
+    if (!location.state?.showAll) {
+      return;
+    }
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
-  };
+    setstopdetailContent(null);
+    setIsHidden(false);
 
-  const handleCloseModal = () => {
-    setSelectedImage(null);
-  };
+    getDocs(collection(db, "posts")).then((data) => {
+      setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
 
-  
+    // Clear one-time navigation state so station selection is not reset again.
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [location.state?.showAll, location.pathname, navigate]);
+
   return (
     <>
       <div ref={mapContainer} className="map-container" />
@@ -323,18 +329,6 @@ function Home({ isAuth }) {
 
                       <div className="postTextContainer"> {post.postText} </div>
 
-                      <div className="postImageContainer">
-                        {post.imagesURL.map((image) => (
-                          <img
-                            src={image}
-                            alt=""
-                            className="postImage"
-                            onClick={() => handleImageClick(image)}
-                            key={image}
-                          />
-                        ))}
-                      </div>
-                      
                       <h3>@{post.author.name}, {new Date(post.date.seconds * 1000 + post.date.nanoseconds / 1000000).toDateString()}</h3>
                         
                     </div>
@@ -343,13 +337,6 @@ function Home({ isAuth }) {
               </div>
           </header>
       </div>
-      {selectedImage && (
-        <div className="modal" onClick={handleCloseModal}>
-          <div className="modal-content">
-            <img src={selectedImage} alt="" className="modal-image" />
-          </div>
-        </div>
-      )}
     </>
 
     

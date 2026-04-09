@@ -1,6 +1,6 @@
 # New York City Food Trucks Map
 
-Website Link: [http://food-truck-map.s3-website.us-east-2.amazonaws.com](http://food-truck-map.s3-website.us-east-2.amazonaws.com/)
+Website Link: [https://nyc-food-truck-map.vercel.app/](https://nyc-food-truck-map.vercel.app/)
 
 &nbsp;
 

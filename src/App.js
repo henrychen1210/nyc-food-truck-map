@@ -29,8 +29,8 @@ export default function App() {
     <Router>
       
       <nav>
-        <img src="./hamburger.png" alt="" />
         <Link to="/">  Home  </Link>
+        <Link to="/" state={{ showAll: true }}>  All  </Link>
 
         {!isAuth ? (
           <Link to="/login" className="login">  Login  </Link>

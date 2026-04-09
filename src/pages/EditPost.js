@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-import { db, storage } from "../firebase-config";
+import { db } from "../firebase-config";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 let stops = require('../json/Subway_Stations.json');
@@ -14,8 +13,6 @@ function EditPost({ isAuth }) {
   const [station, setStation] = useState("");
   const [address, setAddress] = useState("");
   const [postText, setPostText] = useState("");
-  const [imagesURL, setImagesURL] = useState([]);
-  const [selectedImage, setSelectedImage] = useState([]);
 
   let navigate = useNavigate();
   const postID = searchparams.get("postID");
@@ -79,31 +76,8 @@ function EditPost({ isAuth }) {
   stations_456.sort();
   stations_7.sort();
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
-  };
-
   const editPost = async () => {
     const date = new Date();
-    let new_imagesURL = imagesURL;
-
-    if(selectedImage != null){
-      for (let i = 0; i < selectedImage.length; i++) {
-        const file = selectedImage[i];
-        const storageRef = ref(storage, 'images/' + file.name); // Adjust the storage reference path as per your requirement
-        try {
-          await uploadBytes(storageRef, file);
-          const downloadURL = await getDownloadURL(storageRef);
-          new_imagesURL.push(downloadURL);
-          // Do something with the download URL, such as storing it in a database or displaying it to the user
-        } catch (error) {
-          // Handle any errors that occur during the upload process
-          console.log('Error uploading file:', error);
-        }
-      }
-    }
-    console.log(new_imagesURL);
-    setImagesURL(new_imagesURL);
     
     await updateDoc(postDoc, {
         line: line,
@@ -111,32 +85,9 @@ function EditPost({ isAuth }) {
         station: station,
         address: address,
         title: title,
-        date: date,
-        imagesURL: imagesURL
+        date: date
     });
     navigate("/");
-  };
-
-  const deleteImage = async (index) => {
-    const updatedList = imagesURL.filter((_, i) => i !== index);
-
-    
-    const filePath = imagesURL[index].split('/').pop().split('?')[0];
-    const storageRef = ref(storage, filePath.replace( "%2F", "/"));
-
-    try {
-      await deleteObject(storageRef);
-      console.log("File deleted successfully");
-    } catch (error) {
-      console.log("Error deleting file:", error);
-    }
-    
-    setImagesURL(updatedList);
-
-  };
-
-  const handleImageChange = (event) => {
-    setSelectedImage(event.target.files);
   };
 
   useEffect(() => {
@@ -155,7 +106,6 @@ function EditPost({ isAuth }) {
           setStation(postData.station);
           setAddress(postData.address);
           setPostText(postData.postText);
-          setImagesURL(postData.imagesURL);
           console.log(postData)
         } else {
           console.log("Document does not exist");
@@ -373,35 +323,6 @@ function EditPost({ isAuth }) {
                 }}
                 defaultValue={postText}
             />
-        </div>
-
-        <div className="postImageContainer">
-          {imagesURL.map((image) => (
-            <div className="deletePost">
-              <img
-              src={image}
-              alt=""
-              className="postImage"
-              onClick={() => handleImageClick(image)}
-              key={image}
-            />
-              <button
-                onClick={() => {
-                  deleteImage(imagesURL.indexOf(image));
-                }}
-              >
-                <img src="./trash.png" alt="" />
-              </button>
-            </div>
-            
-          ))}
-        </div>
-
-        <div className="uploadImage">
-          <label htmlFor="fileInput" className="customButton">
-            <span>Upload Images</span>
-            <input type="file" id="fileInput" multiple onChange={handleImageChange} />
-          </label>
         </div>
 
         <button onClick={editPost}>Submit Post</button>

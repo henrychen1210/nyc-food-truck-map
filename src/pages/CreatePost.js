@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, auth, storage } from "../firebase-config";
+import { db, auth } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 
 let stops = require('../json/Subway_Stations.json');
@@ -13,14 +12,9 @@ function CreatePost({ isAuth }) {
   const [station, setStation] = useState("");
   const [postText, setPostText] = useState("");
   const [address, setAddress] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
 
   const postsCollectionRef = collection(db, "posts");
   let navigate = useNavigate();
-
-  const handleImageChange = (event) => {
-    setSelectedImage(event.target.files);
-  };
 
   let stations_ace = [];
   let stations_bdfm = [];
@@ -82,24 +76,6 @@ function CreatePost({ isAuth }) {
 
   const createPost = async () => {
     const date = new Date();
-    let imagesURL = [];
-
-    if(selectedImage != null){
-      for (let i = 0; i < selectedImage.length; i++) {
-        const file = selectedImage[i];
-        const storageRef = ref(storage, 'images/' + file.name); // Adjust the storage reference path as per your requirement
-        try {
-          await uploadBytes(storageRef, file);
-          const downloadURL = await getDownloadURL(storageRef);
-          console.log(downloadURL);
-          imagesURL.push(downloadURL);
-          // Do something with the download URL, such as storing it in a database or displaying it to the user
-        } catch (error) {
-          // Handle any errors that occur during the upload process
-          console.log('Error uploading file:', error);
-        }
-      }
-    }
 
     await addDoc(postsCollectionRef, {
       title,
@@ -108,7 +84,7 @@ function CreatePost({ isAuth }) {
       station,
       address,
       postText,
-      imagesURL,
+      imagesURL: [],
       author: { 
         name: auth.currentUser.displayName, 
         id: auth.currentUser.uid 
@@ -306,13 +282,6 @@ function CreatePost({ isAuth }) {
           />
         </div>
         
-        <div className="uploadImage">
-          <label htmlFor="fileInput" className="customButton">
-            <span>Upload Images</span>
-            <input type="file" id="fileInput" multiple onChange={handleImageChange} />
-          </label>
-        </div>
-
         <button onClick={createPost}> Submit Post</button>
       </div>
     </div>

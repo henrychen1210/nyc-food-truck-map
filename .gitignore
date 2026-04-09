@@ -18,6 +18,12 @@
 .env.test.local
 .env.production.local
 
+# Firebase admin credentials (DO NOT COMMIT)
+serviceAccountKey.json
+
+# Python cache
+__pycache__/
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
