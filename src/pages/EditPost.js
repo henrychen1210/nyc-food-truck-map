@@ -167,7 +167,7 @@ function EditPost({ isAuth }) {
       .finally(() => {
         setLoading(false); // Set loading to false when the data is fetched
       });
-  }, [isAuth, navigate]);
+  }, [isAuth, navigate, postDoc]);
 
   if (loading) {
     return <div>Loading...</div>; // Render a loading indicator while fetching the data
