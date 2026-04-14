@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls /Users/henry/Documents/GitHub/food_truck_map/.env*)"
+      "Bash(ls /Users/henry/Documents/GitHub/food_truck_map/.env*)",
+      "Bash(python3 delete_seed_posts.py)",
+      "Bash(python3 -c \"import json; data=json.load\\(open\\('src/json/Subway_Stations.json'\\)\\); stations=sorted\\({f['properties']['name'] for f in data['features']}\\); print\\(f'Total unique stations: {len\\(stations\\)}'\\); print\\(stations[:10]\\)\")",
+      "Bash(python3 -c ':*)",
+      "Bash(python3 seed_realistic.py)"
     ]
   }
 }
