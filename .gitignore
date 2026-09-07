@@ -28,3 +28,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 ruvector.db
+
+# ruflo/claude-flow tool state (auto-generated, not project code)
+.claude-flow/
