@@ -25,6 +25,11 @@
       "react-app/jest"
     ]
   },
+  "jest": {
+    "moduleNameMapper": {
+      "^!mapbox-gl$": "mapbox-gl"
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -48,7 +53,9 @@
     "postcss": "^8.5.10",
     "serialize-javascript": "^7.0.5",
     "@tootallnate/once": "^3.0.1",
-    "ws": "^8.18.0",
-    "webpack-dev-server": "^4.15.2"
+    "ws": "^8.21.0",
+    "webpack-dev-server": "^4.15.2",
+    "qs": "^6.16.0",
+    "uuid": "^11.1.1"
   }
 }
